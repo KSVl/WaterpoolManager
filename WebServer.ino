@@ -8,28 +8,32 @@ Licensed under MIT license
 HTTP Web Server functions
 **************************************************************/
 
+#include "index.h"	// HTML webpage contents with javascripts
+
 void setupWebServer()
 {
 	server.reset(new ESP8266WebServer(WiFi.localIP(), 80));
 
 	server->on("/", handleRoot);
 
+	server->on("/status", handleStatus);
+
 	server->on("/pump/on", []() {
 		pumpEnable = true;
-		server->send(200, "text/plain", "Pump is ON");
+		server->send(200, "text/plain", "ON");
 	});
 	server->on("/pump/off", []() {
 		pumpEnable = false;
-		server->send(200, "text/plain", "Pump is OFF");
+		server->send(200, "text/plain", "OFF");
 	});
 
 	server->on("/heat/on", []() {
 		heaterEnable = true;
-		server->send(200, "text/plain", "Heat is ON");
+		server->send(200, "text/plain", "ON");
 	});
 	server->on("/heat/off", []() {
 		heaterEnable = false;
-		server->send(200, "text/plain", "Heat is OFF");
+		server->send(200, "text/plain", "OFF");
 	});
 
 	server->onNotFound(handleNotFound);
@@ -41,27 +45,41 @@ void setupWebServer()
 
 const char ON_STR[] PROGMEM = "ON";
 const char OFF_STR[] PROGMEM = "OFF";
+const char JSON_RESP[] PROGMEM = R"=====(
+{
+	"temp":[%s],
+	"flow":%d,
+	"pump":"%s",
+	"heat":"%s",
+	"relayPump":"%s",
+	"relayHeat":"%s"
+}
+)=====";
 
 void handleRoot() {
+	server->send(200, "text/html", MAIN_page);
+}
+
+void handleStatus() {
 	char tempString[10];
+	char jsonString[255];
 
-	String message = "Waterpool flow automation.\n\n";
-
+	String temps = "";
 	for (byte t = 0; t <= lastSensorIndex; t++) {
 		int tempInCelsius = (tempData[t] + 8) >> 4; // In celsius, with math rounding
-		sprintf(tempString, "Temperature %d: %2d C\n", t + 1, tempInCelsius);
-		message += tempString;
+		sprintf(tempString, "%d,", tempInCelsius);
+		temps += tempString;
 	}
-	sprintf(tempString, "\nFlow: %2d L/min\n", litersInMinute);
-	message += tempString;
-	message += "\n";
-	message += ("\n Pump enabled: " + (String)(pumpEnable ? FPSTR(ON_STR) : FPSTR(OFF_STR)));
-	message += ("\n Heating enabled: " + (String)(heaterEnable ? FPSTR(ON_STR) : FPSTR(OFF_STR)));
-	message += "\n";
-	message += ("\n Pump relay status: " + (String)(relayPumpON ? FPSTR(ON_STR) : FPSTR(OFF_STR)));
-	message += ("\n Heating relay status: " + (String)(relayHeatON ? FPSTR(ON_STR) : FPSTR(OFF_STR)));
+	temps = temps.substring(0, temps.length() - 1);
 
-	server->send(200, "text/plain", message);
+	sprintf_P(jsonString, JSON_RESP, temps.c_str(), litersInMinute,
+		((String)FPSTR(pumpEnable ? ON_STR : OFF_STR)).c_str(),
+		((String)FPSTR(heaterEnable ? ON_STR : OFF_STR)).c_str(),
+		((String)FPSTR(relayPumpON ? ON_STR : OFF_STR)).c_str(),
+		((String)FPSTR(relayHeatON ? ON_STR : OFF_STR)).c_str()
+	); 
+	
+	server->send(200, "application/json", jsonString);
 }
 
 void handleNotFound() {
