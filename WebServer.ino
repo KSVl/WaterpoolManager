@@ -8,7 +8,8 @@ Licensed under MIT license
 HTTP Web Server functions
 **************************************************************/
 
-#include "index.h"	// HTML webpage contents with javascripts
+#include "index.h"	// HTML webpage contents with javascripts (index page)
+#include "time.h"	// HTML webpage contents with javascripts (set date/time)
 
 void setupWebServer()
 {
@@ -35,6 +36,11 @@ void setupWebServer()
 		heaterEnable = false;
 		server->send(200, "text/plain", "OFF");
 	});
+	server->on("/time", []() {
+		server->send(200, "text/html", TIME_page);
+	});
+	server->on("/gettime", handleGetTime);
+	server->on("/settime", handleSetTime);
 
 	server->onNotFound(handleNotFound);
 
@@ -80,6 +86,17 @@ void handleStatus() {
 	); 
 	
 	server->send(200, "application/json", jsonString);
+}
+
+void handleGetTime() {
+	String currentDateTime = getDateTime();
+	server->send(200, "text/plain", currentDateTime);
+}
+
+void handleSetTime() {
+	String dt = server->arg("dt");
+	setDateTime(dt);
+	server->send(200, "text/plain", "OK");
 }
 
 void handleNotFound() {
