@@ -42,6 +42,8 @@ void setupWebServer()
 	server->on("/gettime", handleGetTime);
 	server->on("/settime", handleSetTime);
 
+	server->on("/logs", handleLogs);
+
 	server->onNotFound(handleNotFound);
 
 	server->begin();
@@ -97,6 +99,10 @@ void handleSetTime() {
 	String dt = server->arg("dt");
 	setDateTime(dt);
 	server->send(200, "text/plain", "OK");
+}
+
+void handleLogs() {
+
 }
 
 void handleNotFound() {

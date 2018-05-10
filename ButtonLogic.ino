@@ -36,21 +36,25 @@ bool processButtons()
 	if (button_heater_switch)
 		heaterEnable = !heaterEnable;
 
+	bool saveSettings = false;
 	// Check, if setup buttons pressed
 	if (button_temp_adj_value)
 	{
+		saveSettings = true;
 		maximumAllowedTemp += 10;
 		if (maximumAllowedTemp > 99)
 			maximumAllowedTemp = 0;
-		EEPROM.write(EEPROM_ADDR_MAXTEMP, maximumAllowedTemp);
 	}
 	if (button_flow_adj_value)
 	{
+		saveSettings = true;
 		minimumAllowedFlow += 5;
 		if (minimumAllowedFlow > 99)
 			minimumAllowedFlow = 0;
-		EEPROM.write(EEPROM_ADDR_MINFLOW, minimumAllowedFlow);
 	}
+	if (saveSettings)
+		SaveSettings();
+
 
 	char tempString[10];
 	if (button_temp_adj_value || button_flow_adj_value)

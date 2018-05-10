@@ -120,24 +120,6 @@ void printInitialTemperatureData()
 
 void printClock()
 {
-	char tempString[16];
-	sprintf(tempString, "%3d:%02d:%02d:%02d", days, hrs, mins, sec);
 	lcd.setCursor(4, 1);
-	lcd.print(tempString);
-}
-
-void printOnMinuteChange() // This function calls once in a minute
-{
-	lcd.clear(); // Complete clear screen once in minute in order to remove grabage (randomly appears sometimes).
-
-				 // int rawReading = analogRead(flowSensorOffPin);
-				 // float volts = rawReading / 204.6;
-	if (minimumAllowedFlow == 0 || maximumAllowedTemp == 0)
-	{
-		lcd.setCursor(3, 1);
-		if (minimumAllowedFlow == 0 && maximumAllowedTemp == 0)
-			lcd.print("=");
-		else
-			lcd.print("-");
-	}
+	lcd.print(heatStatusChangeTimeSpan.ToString());
 }

@@ -8,6 +8,8 @@ Licensed under MIT license
 Main runtime file
 **************************************************************/
 
+#include "TimeSpan.h"
+#include "crc8.h"
 #include <ESP8266WiFi.h>         // https://github.com/esp8266/Arduino
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
@@ -33,8 +35,6 @@ Main runtime file
 #define TEMP_SENSOR_POWER_MODE 0 // Power mode of DS18B20, 0 - external, 1 - parasite
 
 #define RELAY_PUMP_DELAY 10*60 // Delay, in seconds, when waterflow PUMP may OFF after heat is OFF (allow heater cool down).
-#define EEPROM_ADDR_MAXTEMP 2
-#define EEPROM_ADDR_MINFLOW 4
 
 // Pins of LCD like 1602A
 #define LCD_I2C_ADDR 0b0100010
@@ -63,6 +63,7 @@ int minimumAllowedFlow = 5;			// Minimum allowed water flow in heater, Liters/mi
 PCF857x relayPCF8574(0b0100001, &Wire);
 LiquidCrystal_I2C lcd(LCD_I2C_ADDR, LCD_SIZE_CHARS, LCD_SIZE_LINES);
 std::unique_ptr<ESP8266WebServer> server;
+
 
 // Startup code
 void setup()
@@ -109,12 +110,10 @@ void setup()
 	lcd.setCursor(0, 0);
 	lcd.print("Initialization..");
 
-    byte eeprom_maxtemp = EEPROM.read(EEPROM_ADDR_MAXTEMP);
-    byte eeprom_minflow = EEPROM.read(EEPROM_ADDR_MINFLOW);
-    if (eeprom_maxtemp < 100)
-      maximumAllowedTemp = eeprom_maxtemp;
-    if (eeprom_minflow < 100)
-      minimumAllowedFlow = eeprom_minflow;
+	LoadSettings();
+	lcd.print("Init logger..");
+	InitLogger();
+
     Serial.print("Max temp. = ");
     Serial.println(maximumAllowedTemp);
     Serial.print("Min flow = ");
@@ -142,11 +141,11 @@ void setup()
 void loop ()
 {
 	server->handleClient();
+	updateClock();
 
 	SwitchHeatRelay();
 	SwitchPumpRelay();
-
-	onMinuteChangeAction();
+	WriteLogEvent();
 
 	printSensorValues();
 	printStatusValues();

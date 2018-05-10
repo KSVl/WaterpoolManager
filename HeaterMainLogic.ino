@@ -75,7 +75,7 @@ void SwitchHeatRelay()
 	}
 
 	if (relayStateChanged)
-		resetVirtualClock();
+		resetTimer();
 }
 
 // Switch Pump relay ON or OFF depends on heater relay status and pump user pereference
