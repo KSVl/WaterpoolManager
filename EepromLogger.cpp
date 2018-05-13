@@ -80,6 +80,7 @@ bool EepromLogger::readNextRecord(Logger_Record record, uint32_t &timestamp, eea
 {
 	if (readAddress == 0)
 		readAddress = start_address;
+	timestamp = 0;
 	bool read = false;
 	Block_Header block_Header;
 	while (!read)
@@ -95,8 +96,8 @@ bool EepromLogger::readNextRecord(Logger_Record record, uint32_t &timestamp, eea
 				moveToNextBlock(readAddress);
 				continue;
 			}
+			timestamp = block_Header.timestamp;
 		}
-		timestamp = block_Header.timestamp;
 		read = readRecord(record, readAddress);
 		if (!read)
 			moveToNextBlock(readAddress);
@@ -126,7 +127,7 @@ bool EepromLogger::readRecord(Logger_Record &record, eeaddr &address)
 	{
 		unsigned char crc = readByte(address);
 		address += sizeof(crc);
-		unsigned char crc1 = calculate_crc8((unsigned char *)&record, record_size);
+		unsigned char crc1 = calculate_crc8(record, record_size);
 		validRecord = crc == crc1;
 	}
 	return validRecord;

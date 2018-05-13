@@ -101,8 +101,31 @@ void handleSetTime() {
 	server->send(200, "text/plain", "OK");
 }
 
-void handleLogs() {
+void handleLogs() 
+{
+	server->setContentLength(CONTENT_LENGTH_UNKNOWN);
+	server->send(200, "application/octet-stream", "");
 
+	char data[sizeof(LogEvent)];
+	uint32_t blockTimestamp;
+	uint32_t timestamp;
+	eeaddr addr = 0;
+	int recNo = 0;
+	while (logger.readNextRecord((unsigned char*)&data, blockTimestamp, addr))
+	{
+		if (blockTimestamp != 0)	// This is a start of next block
+		{
+			timestamp = blockTimestamp;
+			recNo = 0;
+		}
+		else
+		{
+			recNo++;
+			timestamp += loggingPeriodSeconds;
+		}
+		server->sendContent_P((char*)&timestamp, sizeof(timestamp));
+		server->sendContent_P(data, sizeof(LogEvent));
+	}
 }
 
 void handleNotFound() {
