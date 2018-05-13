@@ -10,6 +10,7 @@ HTTP Web Server functions
 
 #include "index.h"	// HTML webpage contents with javascripts (index page)
 #include "time.h"	// HTML webpage contents with javascripts (set date/time)
+#include "logtable.h"
 
 void setupWebServer()
 {
@@ -43,6 +44,9 @@ void setupWebServer()
 	server->on("/settime", handleSetTime);
 
 	server->on("/logs", handleLogs);
+	server->on("/table.html", []() {
+		server->send(200, "text/html", LOGTABLE_page);
+	});
 
 	server->onNotFound(handleNotFound);
 
