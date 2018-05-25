@@ -38,7 +38,7 @@ void setupWebServer()
 		heaterEnable = false;
 		server->send(200, "text/plain", "OFF");
 	});
-	server->on("/time", []() {
+	server->on("/time.html", []() {
 		server->send(200, "text/html", TIME_page);
 	});
 	server->on("/gettime", handleGetTime);
