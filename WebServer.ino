@@ -10,6 +10,7 @@ HTTP Web Server functions
 
 #include "index.h"	// HTML webpage contents with javascripts (index page)
 #include "time.h"	// HTML webpage contents with javascripts (set date/time)
+#include "settings.h"	// HTML webpage contents with javascripts (manage app settings)
 #include "logtable.h"
 #include "loggraph.h"
 
@@ -38,11 +39,18 @@ void setupWebServer()
 		heaterEnable = false;
 		server->send(200, "text/plain", "OFF");
 	});
+
 	server->on("/time.html", []() {
 		server->send(200, "text/html", TIME_page);
 	});
 	server->on("/gettime", handleGetTime);
 	server->on("/settime", handleSetTime);
+
+	server->on("/settings.html", []() {
+		server->send(200, "text/html", SETTINGS_page);
+	});
+	server->on("/getsettings", handleGetSettings);
+	server->on("/setsettings", handleSetSettings);
 
 	server->on("/logs", handleLogs);
 	server->on("/table.html", []() {
@@ -107,6 +115,18 @@ void handleSetTime() {
 	String dt = server->arg("dt");
 	setDateTime(dt);
 	server->send(200, "text/plain", "OK");
+}
+
+String tempJsonStringForTests = "{\"temp1\":\"40\",\"temp1id\":\"32 43 54 65 76 56 54 43\",\"temp2\":\"40\",\"temp2id\":\"\",\"temp3\":\"0\",\"temp3id\":\"\",\"temp4\":\"0\",\"temp4id\":\"\",\"flow1\":\"5\",\"logging\":\"3600\"}";  // Test only!!
+void handleGetSettings() {
+	String jsonString = tempJsonStringForTests;
+	server->send(200, "application/json", jsonString);
+}
+
+void handleSetSettings() {
+	String jsonString = server->arg("plain");
+Serial.println(jsonString);
+	tempJsonStringForTests = jsonString;
 }
 
 void handleLogs() 
