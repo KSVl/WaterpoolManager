@@ -172,6 +172,7 @@ void handleSetSettings() {
 	}
 	minimumAllowedFlow = root["f1"];
 	loggingPeriodSeconds = root["lp"];
+	SaveSettings();
 }
 
 void handleLogs() 

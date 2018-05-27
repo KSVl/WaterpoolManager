@@ -41,9 +41,9 @@ bool processButtons()
 	if (button_temp_adj_value)
 	{
 		saveSettings = true;
-		maximumAllowedTemp += 10;
-		if (maximumAllowedTemp > 99)
-			maximumAllowedTemp = 0;
+		tempLimits[0] += 10;
+		if (tempLimits[0] > 99)
+			tempLimits[0] = 0;
 	}
 	if (button_flow_adj_value)
 	{

@@ -47,8 +47,11 @@ Main runtime file
 int litersInMinute = 0;
 byte tempSensAddr[TSCOUNT][8];		// Addresses of the first 4 found temperature sensors
 short lastSensorIndex = 0;		// Last index of found temperature sensors
+int tempLimits[] { 0, 0, 0, 0 };	// Temperature limits for each sensor.
 int tempData[] {0, 0, 0, 0};	// Temperatures (raw data from temperature sensor).
-int tempLimits[]{ 0, 0, 0, 0 };	// Temperature limits for each sensor.
+bool tempInRange[TSCOUNT];		// True if temperature for corresponding sensor is in range.
+int minimumAllowedFlow = 0;			// Minimum allowed water flow in heater, Liters/min. 0 - control is off
+int maximumAllowedTempDelta = 5;	// After overheat, temperature should down by given value of degrees C
 
 // Current state of the device
 bool pumpEnable = false;		// User command: Turn ON waterpool recirculation pump
@@ -57,10 +60,6 @@ bool relayHeatON = false;		// Heat relay actual status: ON or OFF
 bool relayPumpON = false;		// Pump relay actual status: ON or OFF
 bool heatingAllowed = false;	// Heating is allowed becasue of the current sensor values is in limits. 
 
-// The initial limit values (preset ranges where heating can be ON). They can be adjusted and saved to EEPROM
-int maximumAllowedTemp = 40;		// Maximum allowed temperature at heater body, degrees C
-int maximumAllowedTempDelta = 5;	// After ocverheat, temperature should down by given value of degrees C
-int minimumAllowedFlow = 5;			// Minimum allowed water flow in heater, Liters/min
 
 // Class library instances
 PCF857x relayPCF8574(0b0100001, &Wire);
@@ -118,11 +117,14 @@ void setup()
 	InitLogger();
 
     Serial.print("Max temp. = ");
-    Serial.println(maximumAllowedTemp);
+    Serial.println(tempLimits[0]);
     Serial.print("Min flow = ");
     Serial.println(minimumAllowedFlow);
 
 	printPresets();
+
+	for (byte t = 0; t < TSCOUNT; t++)
+		tempInRange[t] = true;
 
     // Search for available sensors, fill sensor address array
 	searchTempSensors();

@@ -22,7 +22,7 @@ void printPresets()
 	lcd.setCursor(0, 1);
 	lcd.print("t");
 	lcd.setCursor(1, 1);
-	lcd.print(maximumAllowedTemp);
+	lcd.print(tempLimits[0]);
 	lcd.setCursor(5, 1);
 	lcd.print("f");
 	lcd.setCursor(6, 1);
@@ -33,7 +33,7 @@ void printTempLimits()
 {
 	char tempString[10];
 	lcd.clear();
-	sprintf(tempString, "max temp %2d", maximumAllowedTemp); // Print with leading spaces
+	sprintf(tempString, "max temp %2d", tempLimits[0]); // Print with leading spaces
 	lcd.setCursor(0, 0);
 	lcd.print(tempString);
 	sprintf(tempString, "min flow %2d", minimumAllowedFlow); // Print with leading spaces
@@ -57,12 +57,11 @@ void printSensorValues()
 	char tempString[10];
 	for (byte t = 0; t <= lastSensorIndex; t++) {
 		int tempInCelsius = (tempData[t] + 8) >> 4; // In celsius, with math rounding
-		int len = sprintf(tempString, "%2d", tempInCelsius); // Print with leading spaces
+		char sign = tempInRange[t] ? ' ' : '!';
+		int len = sprintf(tempString, "%2d%c", tempInCelsius, sign); // Print with leading spaces
 		lcd.setCursor(cursorPos, 0);
 		lcd.print(tempString);
 		cursorPos += len;
-		lcd.print(' '); // Write space, because sometimes garbage appears at LCD
-		cursorPos++;
 	}
 	cursorPos = 0;
 	lcd.setCursor(cursorPos, 1);

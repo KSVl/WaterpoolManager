@@ -1,27 +1,31 @@
 #include <EEPROM.h>
 
 #define SAVE_ADDR_BASE 0
-#define SETTINGS_SIZE 4
+#define SETTINGS_SIZE 4 + TSCOUNT
 
 void SaveSettings()
 {
 	EEPROM.begin(SETTINGS_SIZE);
-	WriteDataBytes(SAVE_ADDR_BASE + 0, maximumAllowedTemp, 1);
-	WriteDataBytes(SAVE_ADDR_BASE + 1, minimumAllowedFlow, 1);
-	WriteDataBytes(SAVE_ADDR_BASE + 2, loggingPeriodSeconds, 2);
+	WriteDataBytes(SAVE_ADDR_BASE + 0, loggingPeriodSeconds, 2);
+	WriteDataBytes(SAVE_ADDR_BASE + 2, minimumAllowedFlow, 1);
+	for (byte t = 0; t < TSCOUNT; t++)
+		WriteDataBytes(SAVE_ADDR_BASE + 3 + t, tempLimits[t], 1);
 	EEPROM.commit();
 }
 
 void LoadSettings()
 {
 	EEPROM.begin(SETTINGS_SIZE);
-	byte eeprom_maxtemp = ReadDataBytes(SAVE_ADDR_BASE + 0, 1);
-	byte eeprom_minflow = ReadDataBytes(SAVE_ADDR_BASE + 1, 1);
-	if (eeprom_maxtemp < 100)
-		maximumAllowedTemp = eeprom_maxtemp;
+	loggingPeriodSeconds = ReadDataBytes(SAVE_ADDR_BASE + 0, 2);
+	byte eeprom_minflow = ReadDataBytes(SAVE_ADDR_BASE + 2, 1);
 	if (eeprom_minflow < 100)
 		minimumAllowedFlow = eeprom_minflow;
-	loggingPeriodSeconds = ReadDataBytes(SAVE_ADDR_BASE + 2, 2);
+	for (byte t = 0; t < TSCOUNT; t++)
+	{
+		byte eeprom_maxtemp = ReadDataBytes(SAVE_ADDR_BASE + 3 + t, 1);
+		if (eeprom_maxtemp < 100)
+			tempLimits[t] = eeprom_maxtemp;
+	}
 }
 
 
