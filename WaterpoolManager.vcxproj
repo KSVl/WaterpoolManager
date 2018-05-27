@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C5F80730-F44F-4478-BDAE-6634EFC2CA88}</ProjectGuid>
+    <RootNamespace>
+    </RootNamespace>
+    <ProjectName>WaterpoolManager</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>
+    </PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>
+    </PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\WaterpoolManager;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\ESP8266WiFi\src;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\DNSServer\src;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\ESP8266WebServer\src;C:\Users\Sergey_Korostel\Documents\Arduino\libraries\WiFiManager;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\EEPROM;$(ProjectDir)..\..\Arduino\libraries\LiquidCrystal_I2C;C:\Users\Sergey_Korostel\Documents\Arduino\libraries\OneWire;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\Ticker;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries\Wire;$(ProjectDir)..\..\Arduino\libraries\PCF8574_ESP;C:\Users\Sergey_Korostel\Documents\Arduino\libraries\Rtc_by_Makuna\src;C:\Users\Sergey_Korostel\Documents\Arduino\libraries\ArduinoJson\src;$(ProjectDir)..\..\Arduino\libraries;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\libraries;C:\Users\Sergey_Korostel\Documents\Arduino\libraries;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\libb64;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\spiffs;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\umm_malloc;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\variants\nodemcu;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\lwip2\include;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\libc\xtensa-lx106-elf\include;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2\xtensa-lx106-elf;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\lib\gcc\xtensa-lx106-elf\4.8.2\include;$(ProjectDir)..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)__vm\.WaterpoolManager.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <PreprocessorDefinitions>__ESP8266_ESp8266__;__ESP8266_ESP8266__;__ets__;ICACHE_FLASH;F_CPU=80000000L;LWIP_OPEN_SRC;TCP_MSS=536;ARDUINO=10804;ARDUINO_ESP8266_NODEMCU;ARDUINO_ARCH_ESP8266;ESP8266;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="VisualMicro" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonLogic.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="ClockTimer.ino" />
+    <None Include="EEPROM_Logging.ino" />
+    <None Include="HeaterMainLogic.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="LCD.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="ReadButtonStates.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="Relays.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="Sensors.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="Settings.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="WaterpoolManager.ino">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="WebServer.ino">
+      <FileType>CppCode</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="crc8.h" />
+    <ClInclude Include="EepromLogger.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="index.h" />
+    <ClInclude Include="loggraph.h" />
+    <ClInclude Include="logtable.h" />
+    <ClInclude Include="time.h" />
+    <ClInclude Include="TimeSpan.h" />
+    <ClInclude Include="__vm\.WaterpoolManager.vsarduino.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="crc8.cpp" />
+    <ClCompile Include="EepromLogger.cpp" />
+    <ClCompile Include="TimeSpan.cpp" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
