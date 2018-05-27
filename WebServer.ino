@@ -11,8 +11,14 @@ HTTP Web Server functions
 #include "index.h"	// HTML webpage contents with javascripts (index page)
 #include "time.h"	// HTML webpage contents with javascripts (set date/time)
 #include "settings.h"	// HTML webpage contents with javascripts (manage app settings)
-#include "logtable.h"
-#include "loggraph.h"
+#include "logtable.h"	// HTML webpage contents with javascripts (show logged data in table)
+#include "loggraph.h"	// HTML webpage contents with javascripts (show logged data in chart)
+
+#include "ArduinoJson.h"
+
+// See https://arduinojson.org/assistant/
+const size_t bufferSize = JSON_OBJECT_SIZE(10) + 170;
+DynamicJsonBuffer jsonBuffer(bufferSize);
 
 void setupWebServer()
 {
@@ -117,16 +123,55 @@ void handleSetTime() {
 	server->send(200, "text/plain", "OK");
 }
 
-String tempJsonStringForTests = "{\"temp1\":\"40\",\"temp1id\":\"32 43 54 65 76 56 54 43\",\"temp2\":\"40\",\"temp2id\":\"\",\"temp3\":\"0\",\"temp3id\":\"\",\"temp4\":\"0\",\"temp4id\":\"\",\"flow1\":\"5\",\"logging\":\"3600\"}";  // Test only!!
 void handleGetSettings() {
-	String jsonString = tempJsonStringForTests;
-	server->send(200, "application/json", jsonString);
+	JsonObject& root = jsonBuffer.createObject();
+
+	char tempString[3*8+1];
+	char tempSname[10];
+	for (byte index = 0; index < TSCOUNT; index++)
+	{
+		sprintf(tempSname, "t%d", index+1);
+		root[tempSname] = tempLimits[index];
+		sprintf(tempSname, "t%did", index+1);
+		
+		if (index <= lastSensorIndex)
+		{
+			char* tp = tempString;
+			for (byte i = 0; i < 8; i++) {
+				sprintf(tp, "%02X ", tempSensAddr[index][i]);
+				tp += 3;
+			}
+			tp -= 1;
+			*tp = '\0';
+			root[tempSname] = tempString;
+		}
+		else
+			root[tempSname] = "-";
+	}
+	root["f1"] = minimumAllowedFlow;
+	root["lp"] = loggingPeriodSeconds;
+
+	char jsonChar[300];
+	root.printTo((char*)jsonChar, root.measureLength() + 1);
+	server->send(200, "application/json", jsonChar);
 }
 
 void handleSetSettings() {
 	String jsonString = server->arg("plain");
-Serial.println(jsonString);
-	tempJsonStringForTests = jsonString;
+	JsonObject& root = jsonBuffer.parseObject(jsonString);
+	if (!root.success()) {
+		server->send(400, "text/plain", "400 Bad Request");
+		return;
+	}
+
+	char tempSname[10];
+	for (byte index = 0; index < TSCOUNT; index++)
+	{
+		sprintf(tempSname, "t%d", index + 1);
+		tempLimits[index] = root[tempSname];
+	}
+	minimumAllowedFlow = root["f1"];
+	loggingPeriodSeconds = root["lp"];
 }
 
 void handleLogs() 

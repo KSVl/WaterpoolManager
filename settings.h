@@ -54,7 +54,7 @@ const char SETTINGS_page[] PROGMEM = R"=====(
 					if (element.type === 'checkbox')
 						value = element.checked ? 'true' : 'false';
 
-					if (name) {
+					if (name  && element.className != 'readonly') {
 						obj[name] = value;
 					}
 				}
@@ -82,7 +82,6 @@ const char SETTINGS_page[] PROGMEM = R"=====(
 			var obj = JSON.parse(jsonString);
 			for (var key in obj) {
 				if (obj.hasOwnProperty(key)) {
-					//console.log(key + " -> " + obj[key]);
 					var elem = document.getElementsByName(key)[0];
 					elem.value = obj[key];
 					if (elem.type === 'checkbox')
@@ -114,38 +113,38 @@ const char SETTINGS_page[] PROGMEM = R"=====(
 			<label>Temperature sensor maximums</label>
 		</div>
 		<div class="form-group">
-			<label for="temp1">1. </label>
-			<input class="maxval" type="number" name="temp1" id="temp1" min="0" max="99" />
-			<input class="readonly" type="text" name="temp1id" id="temp1id" readonly />
+			<label for="t1">1. </label>
+			<input class="maxval" type="number" name="t1" id="t1" min="0" max="99" />
+			<input class="readonly" type="text" name="t1id" id="t1id" readonly />
 		</div>
 		<div class="form-group">
-			<label for="temp2">2. </label>
-			<input class="maxval" type="number" name="temp2" id="temp2" min="0" max="99" />
-			<input class="readonly" type="text" name="temp2id" id="temp2id" readonly />
+			<label for="t2">2. </label>
+			<input class="maxval" type="number" name="t2" id="t2" min="0" max="99" />
+			<input class="readonly" type="text" name="t2id" id="t2id" readonly />
 		</div>
 		<div class="form-group">
-			<label for="temp3">3. </label>
-			<input class="maxval" type="number" name="temp3" id="temp3" min="0" max="99" />
-			<input class="readonly" type="text" name="temp3id" id="temp3id" readonly />
+			<label for="t3">3. </label>
+			<input class="maxval" type="number" name="t3" id="t3" min="0" max="99" />
+			<input class="readonly" type="text" name="t3id" id="t3id" readonly />
 		</div>
 		<div class="form-group">
-			<label for="temp4">4. </label>
-			<input class="maxval" type="number" name="temp4" id="temp4" min="0" max="99" />
-			<input class="readonly" type="text" name="temp4id" id="temp4id" readonly />
+			<label for="t4">4. </label>
+			<input class="maxval" type="number" name="t4" id="t4" min="0" max="99" />
+			<input class="readonly" type="text" name="t4id" id="t4id" readonly />
 		</div>
 		<div class="form-header">
 			<label>Flow sensor minimums</label>
 		</div>
 		<div class="form-group">
-			<label for="flow1">Flow: </label>
-			<input class="maxval" type="number" name="flow1" id="flow1" min="0" max="999" />
+			<label for="f1">Flow: </label>
+			<input class="maxval" type="number" name="f1" id="f1" min="0" max="999" />
 		</div>
 		<div class="form-header">
 			<label>Sensor data logging</label>
 		</div>
 		<div class="form-group">
-			<label for="logging">Period, seconds: </label>
-			<input class="logval" type="number" name="logging" id="logging" min="0" max="3600" />
+			<label for="lp">Period, seconds: </label>
+			<input class="logval" type="number" name="lp" id="lp" min="0" max="3600" />
 		</div>
 		<div class="form-footer">
 			<label>Note: zero means that the sensor is OFF</label>

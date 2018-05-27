@@ -41,11 +41,14 @@ Main runtime file
 #define LCD_SIZE_CHARS 16
 #define LCD_SIZE_LINES 2
 
+#define TSCOUNT 4
+
 // Current values, acquired from sensors
 int litersInMinute = 0;
-byte tempSensAddr[4][8];		// Addresses of the first 4 found temperature sensors
+byte tempSensAddr[TSCOUNT][8];		// Addresses of the first 4 found temperature sensors
 short lastSensorIndex = 0;		// Last index of found temperature sensors
-int tempData[4] {0, 0, 0, 0};	// Temperatures (raw data from temperature sensor).
+int tempData[] {0, 0, 0, 0};	// Temperatures (raw data from temperature sensor).
+int tempLimits[]{ 0, 0, 0, 0 };	// Temperature limits for each sensor.
 
 // Current state of the device
 bool pumpEnable = false;		// User command: Turn ON waterpool recirculation pump
