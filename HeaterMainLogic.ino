@@ -42,6 +42,12 @@ bool HeaterCanBeON()
 	return canBeON;
 }
 
+void resetSensorLimitRanges()
+{
+	for (byte t = 0; t < TSCOUNT; t++)
+		tempInRange[t] = true;
+}
+
 // Switch Heat relay ON or OFF depends on limit values
 void SwitchHeatRelay()
 {

@@ -26,6 +26,16 @@ const char MAIN_page[] PROGMEM = R"=====(
 	Heating relay status: <span id="heatRelay">-</span>
 	</p>
 
+	<p>
+		<br />
+		<input type="button" value="Log graph" onclick="window.location.href='/graph.html'" />
+		<br />
+		<input type="button" value="Log table" onclick="window.location.href='/table.html'" />
+		<br />
+		<input type="button" value="Settings" onclick="window.location.href='/settings.html'" />
+	</p>
+
+
 	<script>
 		setInterval(function() {
 			getData();

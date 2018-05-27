@@ -116,15 +116,13 @@ void setup()
 	lcd.print("Init logger..");
 	InitLogger();
 
-    Serial.print("Max temp. = ");
-    Serial.println(tempLimits[0]);
+    Serial.printf("Max temp. = %d %d %d %d\r\n", tempLimits[0], tempLimits[1], tempLimits[2], tempLimits[3]);
     Serial.print("Min flow = ");
     Serial.println(minimumAllowedFlow);
 
 	printPresets();
 
-	for (byte t = 0; t < TSCOUNT; t++)
-		tempInRange[t] = true;
+	resetSensorLimitRanges();
 
     // Search for available sensors, fill sensor address array
 	searchTempSensors();
@@ -153,8 +151,13 @@ void loop ()
 	WriteLogEvent();
 
 	printSensorValues();
-	printStatusValues();
-    printClock();
+	if (secondReminder(5))
+		printSensorLimits();
+	else
+	{
+		printStatusValues();
+		printClock();
+	}
 
 	bool anyButtonWasPressed = processButtons();
 

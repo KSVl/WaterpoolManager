@@ -43,9 +43,6 @@
     <ClInclude Include="TimeSpan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="loggraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="index.h">
       <Filter>WebPages</Filter>
     </ClInclude>
@@ -56,6 +53,9 @@
       <Filter>WebPages</Filter>
     </ClInclude>
     <ClInclude Include="settings.h">
+      <Filter>WebPages</Filter>
+    </ClInclude>
+    <ClInclude Include="loggraph.h">
       <Filter>WebPages</Filter>
     </ClInclude>
   </ItemGroup>

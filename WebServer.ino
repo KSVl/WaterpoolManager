@@ -156,7 +156,8 @@ void handleGetSettings() {
 	server->send(200, "application/json", jsonChar);
 }
 
-void handleSetSettings() {
+void handleSetSettings() 
+{
 	String jsonString = server->arg("plain");
 	JsonObject& root = jsonBuffer.parseObject(jsonString);
 	if (!root.success()) {
@@ -173,6 +174,7 @@ void handleSetSettings() {
 	minimumAllowedFlow = root["f1"];
 	loggingPeriodSeconds = root["lp"];
 	SaveSettings();
+	resetSensorLimitRanges();
 }
 
 void handleLogs() 

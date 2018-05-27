@@ -30,14 +30,12 @@ EepromLogger logger(&writer, &reader, &getCurrentTimestamp);
 
 void InitLogger()
 {
-
-loggingPeriodSeconds = 5;//!!!debug
 	if (loggingPeriodSeconds > 0)
 	{
 		unsigned int logRecordsInBlock = 60 * 60 / loggingPeriodSeconds;	// 1 block for hour
 		while (logRecordsInBlock > 1000)	// If too large block, one block per half/hour or even smaller
 			logRecordsInBlock = logRecordsInBlock / 2;
-logRecordsInBlock = 10;//!!!debug
+
 		logger.initialize(0, EE24C_SIZE-1,
 			logRecordsInBlock, sizeof(LogEvent), true);
 	}

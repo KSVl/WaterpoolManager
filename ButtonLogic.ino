@@ -53,8 +53,10 @@ bool processButtons()
 			minimumAllowedFlow = 0;
 	}
 	if (saveSettings)
+	{
 		SaveSettings();
-
+		resetSensorLimitRanges();
+	}
 
 	char tempString[10];
 	if (button_temp_adj_value || button_flow_adj_value)

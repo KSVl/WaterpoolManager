@@ -77,3 +77,8 @@ void resetTimer()
 {
 	heatStatusChangeTimeSpan = 0;
 }
+
+bool secondReminder(byte sec)
+{
+	return currentDateTime.Second() % sec == 0;
+}

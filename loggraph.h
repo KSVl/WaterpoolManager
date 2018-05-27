@@ -16,7 +16,7 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 				<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 </head>
-			<body onload="createPlot('d.bin');">
+			<body onload="createPlot('logs');">
 				<h1>Waterpool monitor - Logging Graphs</h1>
 
 				Date range: <input type="text" name="datetimes" style="width:200px" />
@@ -26,8 +26,8 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 				<script>
 					var plot1 = null;
 			var cachedBytes = null;
-			var defaultStartDate = moment().startOf('hour').add(-24, 'hour');
-			var defaultEndDate = moment().startOf('hour');
+			var defaultStartDate = moment().startOf('hour').add(-23, 'hour');
+			var defaultEndDate = moment().startOf('hour').add(+1, 'hour');
 	
 	
 $(function() {
@@ -48,24 +48,9 @@ $(function() {
 						);
 					});
 					
-		function getLogData() {
-			var xhttp = new XMLHttpRequest();
-					xhttp.open("GET", "d.bin", true);
-					xhttp.responseType = "arraybuffer";
-					xhttp.send(null);
-					if (xhttp.status === 200)
-			{
-				var arrayBuffer = xhttp.response;
-				if (arrayBuffer) {
-						var byteArray = new Uint8Array(arrayBuffer);
-					return byteArray;
-			}
-		}
-	}
-
-function fillData(byteArray, startDate, endDate)
+	function fillData(byteArray, startDate, endDate)
 	{
-		var data = [[],[]];
+		var data = [[],[],[],[],[],[]];
 			
 							var ind = 0;
 				while (ind < byteArray.byteLength)
@@ -88,13 +73,18 @@ function fillData(byteArray, startDate, endDate)
 					var dateString = dateStr.slice(-24, -14)+" "+dateStr.slice(-13, -5);
 						data[0].push([dateString, flow]);
 						data[1].push([dateString, temp1]);
+						data[2].push([dateString, temp2]);
+						data[3].push([dateString, temp3]);
+						data[4].push([dateString, temp4]);
+						data[5].push([dateString, state]);
 					}
 				}
 
 			return data;
 	};
 
-function fetchLogData(url, success) {
+function fetchLogData(url, success) 
+{
 
 			var xhttp = new XMLHttpRequest();
 					xhttp.open("GET", url, true);
@@ -113,6 +103,10 @@ function fetchLogData(url, success) {
 
 function rebuildPlotFromBytes(bytes, startDate, endDate)
 	{
+			var timeZoneOffset = new Date().getTimezoneOffset();
+			startDate = startDate.add(-timeZoneOffset, 'minute');
+			endDate = endDate.add(-timeZoneOffset, 'minute');
+
 			var data = fillData(bytes, startDate, endDate);
 			if (plot1 == null) {
 						plot1 = $.jqplot('chart1', data, {
