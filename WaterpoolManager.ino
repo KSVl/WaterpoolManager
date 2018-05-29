@@ -42,6 +42,7 @@ Main runtime file
 #define LCD_SIZE_LINES 2
 
 #define TSCOUNT 4
+#define RELNAMESIZE 16
 
 // Current values, acquired from sensors
 int litersInMinute = 0;
@@ -52,6 +53,8 @@ int tempData[] {0, 0, 0, 0};	// Temperatures (raw data from temperature sensor).
 bool tempInRange[TSCOUNT];		// True if temperature for corresponding sensor is in range.
 int minimumAllowedFlow = 0;			// Minimum allowed water flow in heater, Liters/min. 0 - control is off
 int maximumAllowedTempDelta = 5;	// After overheat, temperature should down by given value of degrees C
+char relay3name[RELNAMESIZE];
+char relay4name[RELNAMESIZE];
 
 // Current state of the device
 bool pumpEnable = false;		// User command: Turn ON waterpool recirculation pump
@@ -59,6 +62,8 @@ bool heaterEnable = false;		// User command: Turn ON water heating
 bool relayHeatON = false;		// Heat relay actual status: ON or OFF
 bool relayPumpON = false;		// Pump relay actual status: ON or OFF
 bool heatingAllowed = false;	// Heating is allowed becasue of the current sensor values is in limits. 
+bool relay3ON = false;			// Additional relay actual status: ON or OFF
+bool relay4ON = false;			// Additional relay actual status: ON or OFF
 
 
 // Class library instances
@@ -148,6 +153,7 @@ void loop ()
 
 	SwitchHeatRelay();
 	SwitchPumpRelay();
+	SwitchAdditionalRelays();
 	WriteLogEvent();
 
 	printSensorValues();

@@ -25,6 +25,11 @@ const char MAIN_page[] PROGMEM = R"=====(
 	Pump relay status: <span id="pumpRelay">-</span></br>
 	Heating relay status: <span id="heatRelay">-</span>
 	</p>
+	<p>Additional relays:<br/>
+		<span id="r3name">-</span> <span id="r3">-</span> <button type="button" onclick="setData('r3', 'on')">ON</button><button type="button" onclick="setData('r3', 'off')">OFF</button>
+		<br/>
+		<span id="r4name">-</span> <span id="r4">-</span> <button type="button" onclick="setData('r4', 'on')">ON</button><button type="button" onclick="setData('r4', 'off')">OFF</button>
+	</p>
 
 	<p>
 		<br />
@@ -68,6 +73,10 @@ const char MAIN_page[] PROGMEM = R"=====(
 					document.getElementById("heat").innerHTML = obj.heat;
 					document.getElementById("pumpRelay").innerHTML = obj.relayPump;
 					document.getElementById("heatRelay").innerHTML = obj.relayHeat;
+					document.getElementById("r3name").innerHTML = obj.r3name;
+					document.getElementById("r4name").innerHTML = obj.r4name;
+					document.getElementById("r3").innerHTML = obj.r3;
+					document.getElementById("r4").innerHTML = obj.r4;
 				}
 			};
 			xhttp.open("GET", "status", true);

@@ -34,7 +34,9 @@ const char SETTINGS_page[] PROGMEM = R"=====(
 		input.logval {
 			width: 5em;
 		}
-
+		input.textval {
+			width: 10em;
+		}
 		input.readonly {
 			width: 12em;
 			outline: none;
@@ -145,6 +147,14 @@ const char SETTINGS_page[] PROGMEM = R"=====(
 		<div class="form-group">
 			<label for="lp">Period, seconds: </label>
 			<input class="logval" type="number" name="lp" id="lp" min="0" max="3600" />
+		</div>
+		<div class="form-group">
+			<label for="r3">Relay 3 Name:</label>
+			<input class="textval" type="text" name="r3" id="r3" maxlength="15" />
+		</div>
+		<div class="form-group">
+			<label for="r4">Relay 4 Name:</label>
+			<input class="textval" type="text" name="r4" id="r4" maxlength="15" />
 		</div>
 		<div class="form-footer">
 			<label>Note: zero means that the sensor is OFF</label>

@@ -17,7 +17,7 @@ HTTP Web Server functions
 #include "ArduinoJson.h"
 
 // See https://arduinojson.org/assistant/
-const size_t bufferSize = JSON_OBJECT_SIZE(10) + 170;
+const size_t bufferSize = JSON_OBJECT_SIZE(12) + 200;
 DynamicJsonBuffer jsonBuffer(bufferSize);
 
 void setupWebServer()
@@ -43,6 +43,23 @@ void setupWebServer()
 	});
 	server->on("/heat/off", []() {
 		heaterEnable = false;
+		server->send(200, "text/plain", "OFF");
+	});
+
+	server->on("/r3/on", []() {
+		relay3ON = true;
+		server->send(200, "text/plain", "ON");
+	});
+	server->on("/r3/off", []() {
+		relay3ON = false;
+		server->send(200, "text/plain", "OFF");
+	});
+	server->on("/r4/on", []() {
+		relay4ON = true;
+		server->send(200, "text/plain", "ON");
+	});
+	server->on("/r4/off", []() {
+		relay4ON = false;
 		server->send(200, "text/plain", "OFF");
 	});
 
@@ -82,7 +99,11 @@ const char JSON_RESP[] PROGMEM = R"=====(
 	"pump":"%s",
 	"heat":"%s",
 	"relayPump":"%s",
-	"relayHeat":"%s"
+	"relayHeat":"%s",
+	"r3name":"%s",
+	"r4name":"%s",
+	"r3":"%s",
+	"r4":"%s"
 }
 )=====";
 
@@ -106,7 +127,11 @@ void handleStatus() {
 		((String)FPSTR(pumpEnable ? ON_STR : OFF_STR)).c_str(),
 		((String)FPSTR(heaterEnable ? ON_STR : OFF_STR)).c_str(),
 		((String)FPSTR(relayPumpON ? ON_STR : OFF_STR)).c_str(),
-		((String)FPSTR(relayHeatON ? ON_STR : OFF_STR)).c_str()
+		((String)FPSTR(relayHeatON ? ON_STR : OFF_STR)).c_str(),
+		relay3name, 
+		relay4name,
+		((String)FPSTR(relay3ON ? ON_STR : OFF_STR)).c_str(),
+		((String)FPSTR(relay4ON ? ON_STR : OFF_STR)).c_str()
 	); 
 	
 	server->send(200, "application/json", jsonString);
@@ -150,6 +175,8 @@ void handleGetSettings() {
 	}
 	root["f1"] = minimumAllowedFlow;
 	root["lp"] = loggingPeriodSeconds;
+	root["r3"] = relay3name;
+	root["r4"] = relay4name;
 
 	char jsonChar[300];
 	root.printTo((char*)jsonChar, root.measureLength() + 1);
@@ -173,6 +200,10 @@ void handleSetSettings()
 	}
 	minimumAllowedFlow = root["f1"];
 	loggingPeriodSeconds = root["lp"];
+	String r3 = root["r3"];
+	r3.toCharArray(relay3name, RELNAMESIZE);
+	String r4 = root["r4"];
+	r4.toCharArray(relay4name, RELNAMESIZE);
 	SaveSettings();
 	resetSensorLimitRanges();
 }

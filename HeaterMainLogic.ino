@@ -106,3 +106,25 @@ void SwitchPumpRelay()
 	}
 }
 
+bool prevRelay3ON = !relay3ON;
+bool prevRelay4ON = !relay4ON;
+void SwitchAdditionalRelays()
+{
+	if (prevRelay3ON != relay3ON)
+	{
+		if (relay3ON)
+			RelayOn(3 - 1);
+		else
+			RelayOff(3 - 1);
+		prevRelay3ON = relay3ON;
+	}
+	if (prevRelay4ON != relay4ON)
+	{
+		if (relay4ON)
+			RelayOn(4 - 1);
+		else
+			RelayOff(4 - 1);
+		prevRelay4ON = relay4ON;
+	}
+}
+

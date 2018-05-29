@@ -1,7 +1,7 @@
 #include <EEPROM.h>
 
 #define SAVE_ADDR_BASE 0
-#define SETTINGS_SIZE 4 + TSCOUNT
+#define SETTINGS_SIZE 4 + TSCOUNT + 2*RELNAMESIZE
 
 void SaveSettings()
 {
@@ -10,6 +10,8 @@ void SaveSettings()
 	WriteDataBytes(SAVE_ADDR_BASE + 2, minimumAllowedFlow, 1);
 	for (byte t = 0; t < TSCOUNT; t++)
 		WriteDataBytes(SAVE_ADDR_BASE + 3 + t, tempLimits[t], 1);
+	WriteString(SAVE_ADDR_BASE + 3 + TSCOUNT, relay3name, RELNAMESIZE);
+	WriteString(SAVE_ADDR_BASE + 3 + TSCOUNT + RELNAMESIZE, relay4name, RELNAMESIZE);
 	EEPROM.commit();
 }
 
@@ -26,6 +28,12 @@ void LoadSettings()
 		if (eeprom_maxtemp < 100)
 			tempLimits[t] = eeprom_maxtemp;
 	}
+	ReadString(SAVE_ADDR_BASE + 3 + TSCOUNT, relay3name, RELNAMESIZE);
+	ReadString(SAVE_ADDR_BASE + 3 + TSCOUNT + RELNAMESIZE, relay4name, RELNAMESIZE);
+	if (relay3name[0] < 0x20)
+		relay3name[0] = 0x00;
+	if (relay4name[0] < 0x20)
+		relay4name[0] = 0x00;
 }
 
 
@@ -49,3 +57,32 @@ u32 ReadDataBytes(u16 ReadAddr, u8 NumOfBytes)
 	}
 	return temp;
 }
+
+void ReadString(int addr, char* buffer, int bufSize) 
+{
+	if (bufSize == 0) 
+		return;
+	char ch = 1;
+	int charsRead = 0;
+	while ((ch != 0x00) && (charsRead < bufSize))
+	{
+		ch = EEPROM.read(addr + charsRead);
+		buffer[charsRead] = ch;
+		charsRead++;
+	}
+	if (ch != 0x00)
+		buffer[charsRead - 1] = 0;
+}
+
+void WriteString(int addr, char* string, int maxSize)
+{
+	int charsRead = 0;
+	char ch = 0x00;
+	do 
+	{
+		ch = string[charsRead];
+		EEPROM.write(addr + charsRead, ch);
+		charsRead++;
+	} while (ch != 0x00 && charsRead < maxSize);
+}
+
