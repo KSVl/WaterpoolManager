@@ -30,14 +30,15 @@ const char MAIN_page[] PROGMEM = R"=====(
 		<br/>
 		<span id="r4name">-</span> <span id="r4">-</span> <button type="button" onclick="setData('r4', 'on')">ON</button><button type="button" onclick="setData('r4', 'off')">OFF</button>
 	</p>
-
 	<p>
 		<br />
 		<input type="button" value="Log graph" onclick="window.location.href='/graph.html'" />
-		<br />
+		&nbsp;&nbsp;
 		<input type="button" value="Log table" onclick="window.location.href='/table.html'" />
-		<br />
+		&nbsp;&nbsp;
 		<input type="button" value="Settings" onclick="window.location.href='/settings.html'" />
+	</p>
+	<p>Heap free: <span id="heap">-</span> 
 	</p>
 
 
@@ -77,6 +78,7 @@ const char MAIN_page[] PROGMEM = R"=====(
 					document.getElementById("r4name").innerHTML = obj.r4name;
 					document.getElementById("r3").innerHTML = obj.r3;
 					document.getElementById("r4").innerHTML = obj.r4;
+					document.getElementById("heap").innerHTML = obj.heap;
 				}
 			};
 			xhttp.open("GET", "status", true);

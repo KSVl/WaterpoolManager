@@ -103,7 +103,8 @@ const char JSON_RESP[] PROGMEM = R"=====(
 	"r3name":"%s",
 	"r4name":"%s",
 	"r3":"%s",
-	"r4":"%s"
+	"r4":"%s",
+	"heap":"%lu"
 }
 )=====";
 
@@ -131,9 +132,9 @@ void handleStatus() {
 		relay3name, 
 		relay4name,
 		((String)FPSTR(relay3ON ? ON_STR : OFF_STR)).c_str(),
-		((String)FPSTR(relay4ON ? ON_STR : OFF_STR)).c_str()
+		((String)FPSTR(relay4ON ? ON_STR : OFF_STR)).c_str(),
+		system_get_free_heap_size()
 	); 
-	
 	server->send(200, "application/json", jsonString);
 }
 

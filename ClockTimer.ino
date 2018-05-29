@@ -14,7 +14,7 @@ Functions, working with realtime clock & timers
 
 RtcDS3231<TwoWire> Rtc(Wire);
 
-RtcDateTime currentDateTime(0);
+RtcDateTime currentDateTime(24*60*60);
 TimeSpan heatStatusChangeTimeSpan(0);	// Count the time passed from the heater change status (On/Off)
 
 // Set DateTime from string, given in format YYYYMMDD-HHMMSS

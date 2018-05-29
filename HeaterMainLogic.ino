@@ -9,7 +9,7 @@ Main business logic which checks that the sensor values is in limits and allow r
 **************************************************************/
 
 // Variables
-unsigned int timePassedAfterHeatOff = 0;			 // Time passed after heater was switched off, millis
+unsigned long timeWhenHeatOff = 0;			 // Time passed after heater was switched off, millis
 
 // Check if the current sensor values is in limits. Then heater can be switched ON
 bool HeaterCanBeON()
@@ -67,7 +67,7 @@ void SwitchHeatRelay()
 		else
 		{
 			HeatRelayOFF();
-			timePassedAfterHeatOff = millis();
+			timeWhenHeatOff = currentDateTime.TotalSeconds();
 			if (!pumpEnable)
 			{
 				// ToDo: start timer to switch off pump relay after specified RELAY_PUMP_DELAY
@@ -84,15 +84,17 @@ void SwitchPumpRelay()
 {
 	bool prevRelayPumpON = relayPumpON;
 	relayPumpON = pumpEnable;
-
 	// Pump relay shpould always work when the heating is ON and some time after that.
 	if (relayHeatON)
 		relayPumpON = true;
 	else
 	{
+		uint32_t seconds = currentDateTime.TotalSeconds();
 		// If heating is OFF, then we check how long it was switched off. If just switched off, then we left pump ON for the specified time.
-		if (millis() - timePassedAfterHeatOff < RELAY_PUMP_DELAY * 1000)
+		if (seconds - timeWhenHeatOff < RELAY_PUMP_DELAY)
+		{ 
 			relayPumpON = true;
+		}
 	}
 
 	bool relayStateChanged = relayPumpON != prevRelayPumpON;
