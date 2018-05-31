@@ -108,6 +108,12 @@ void SwitchPumpRelay()
 	}
 }
 
+unsigned char GetDeviceStatus()
+{
+	return pumpEnable | heaterEnable << 1 | relayPumpON << 2 | relayHeatON << 3 | heatingAllowed << 4 |
+		relay3ON << 5 | relay4ON << 6;
+}
+
 bool prevRelay3ON = !relay3ON;
 bool prevRelay4ON = !relay4ON;
 void SwitchAdditionalRelays()

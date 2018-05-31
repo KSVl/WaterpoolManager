@@ -156,6 +156,10 @@ void loop ()
 	SwitchPumpRelay();
 	SwitchAdditionalRelays();
 	WriteLogEvent();
+	if (GetDeviceStatus() > 0)
+		lcdBacklightON();
+	else
+		lcdBacklightOFF();
 
 	printSensorValues();
 	if (secondReminder(5))

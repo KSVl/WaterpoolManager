@@ -11,8 +11,18 @@ All functions for priting at LiquidCrystal LCD (1602A or same)
 void setupLcd()
 {
 	lcd.begin();
-	lcd.noBacklight();  // Backlight signal is reversed in my hardware
+	lcdBacklightON();
 	lcd.setCursor(0, 0);
+}
+
+void lcdBacklightON()
+{
+	lcd.noBacklight();  // Backlight signal is reversed in my hardware
+}
+
+void lcdBacklightOFF()
+{
+	lcd.backlight();  // Backlight signal is reversed in my hardware
 }
 
 void printPresets()

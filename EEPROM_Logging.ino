@@ -54,8 +54,7 @@ void WriteLogEvent()
 			char i;
 			for (i = 0; i < 4; i++)
 				logEvent.tempCelsius[i] = (tempData[i] + 8) >> 4;;
-			logEvent.deviceStatus = pumpEnable | heaterEnable << 1 | relayPumpON << 2 | relayHeatON << 3 | heatingAllowed << 4 |
-				relay3ON << 5 | relay4ON << 6;
+			logEvent.deviceStatus = GetDeviceStatus();
 			logger.writeNextRecord((unsigned char*)&logEvent);
 
 			lastEventSeq = eventSeq;
