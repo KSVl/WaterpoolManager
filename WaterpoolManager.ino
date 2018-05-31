@@ -117,6 +117,7 @@ void setup()
 	lcd.setCursor(0, 0);
 	lcd.print("Initialization..");
 
+	updateClock();
 	LoadSettings();
 	lcd.print("Init logger..");
 	InitLogger();

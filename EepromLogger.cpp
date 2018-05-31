@@ -181,6 +181,19 @@ bool EepromLogger::findLastValidBlock()
 	return found;
 }
 
+void EepromLogger::format()
+{
+	Block_Header block_Header;
+	unsigned int i;
+	for (i = 0; i < block_count; i++) {
+		unsigned int address = start_address + i * block_size;
+		block_Header.timestamp = 0;
+		block_Header.crc = 0;
+		writeBytes(address, (unsigned char*)&block_Header, sizeof(block_Header));
+	}
+	current_Address = start_address;
+}
+
 // Move address pointer to the beginning of following block
 void EepromLogger::moveToNextBlock(eeaddr & address)
 {

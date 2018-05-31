@@ -200,6 +200,7 @@ void handleSetSettings()
 		tempLimits[index] = root[tempSname];
 	}
 	minimumAllowedFlow = root["f1"];
+	unsigned int prevLoggingPeriodSeconds = loggingPeriodSeconds;
 	loggingPeriodSeconds = root["lp"];
 	String r3 = root["r3"];
 	r3.toCharArray(relay3name, RELNAMESIZE);
@@ -207,6 +208,11 @@ void handleSetSettings()
 	r4.toCharArray(relay4name, RELNAMESIZE);
 	SaveSettings();
 	resetSensorLimitRanges();
+	if (prevLoggingPeriodSeconds != loggingPeriodSeconds)
+	{
+		InitLogger();
+		logger.format();
+	}
 }
 
 void handleLogs() 

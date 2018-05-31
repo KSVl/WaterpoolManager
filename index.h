@@ -65,7 +65,7 @@ const char MAIN_page[] PROGMEM = R"=====(
 					obj = JSON.parse(this.responseText);
 					var tempString = "";
 					for (i = 0; i < obj.temp.length; i++) {
-						tempString += "&nbsp;&nbsp;T" + i + ": " + obj.temp[i].toString().padStart(2, "0") + " &#0176;C</br>";
+						tempString += "&nbsp;&nbsp;Temp" + (i+1) + ": " + obj.temp[i].toString().padStart(2, "0") + " &#0176;C</br>";
 					}
 					document.getElementById("temp").innerHTML = tempString;
 					document.getElementById("flow").innerHTML = obj.flow;

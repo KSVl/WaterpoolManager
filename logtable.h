@@ -9,13 +9,14 @@ const char LOGTABLE_page[] PROGMEM = R"=====(
 	<h1>Waterpool monitor - Logging Table</h1>
 
 	<span id="data"></span>
+	<span id="progress">Loading...</span>
 
 	<script>
 		function getLogData() {
 			var xhttp = new XMLHttpRequest();
 			xhttp.open("GET", "logs", true);
 			xhttp.responseType = "arraybuffer";
-
+			xhttp.onprogress = updateProgress;
 			xhttp.onload = function (oEvent) {
   			var arrayBuffer = xhttp.response; 
   			if (arrayBuffer) {
@@ -42,7 +43,7 @@ const char LOGTABLE_page[] PROGMEM = R"=====(
 						" T2: " + temp2.toString().padStart(2, "0") + 
 						" T3: " + temp3.toString().padStart(2, "0") + 
 						" T4: " + temp4.toString().padStart(2, "0") + 
-						" State: " + state.toString().padStart(2, "0") + "</br>";
+						" State: " + state.toString(2).padStart(8, "0") + "</br>";
 					document.getElementById("data").innerHTML += tempString;
 				}
 
@@ -50,6 +51,10 @@ const char LOGTABLE_page[] PROGMEM = R"=====(
 			}};
 			xhttp.send(null);
 		}
+		function updateProgress(evt) 
+		{
+			document.getElementById("progress").innerHTML = 'Loaded ' + evt.loaded + ' bytes';
+		}   
 	</script>
 </body>
 </html>

@@ -27,7 +27,7 @@ public:
 		const unsigned int records_in_block, const unsigned int record_size, const bool crcForEachRecord);
 	void writeNextRecord(const Logger_Record);
 	bool readNextRecord(Logger_Record, uint32_t &timestamp, eeaddr &addr);
-
+	void format();
 private:
 	eeaddr start_address;
 	eeaddr end_address;
