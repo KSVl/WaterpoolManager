@@ -68,7 +68,7 @@ void printSensorValues()
 	byte cursorPos = 0;
 	char tempString[10];
 	lcd.setCursor(cursorPos, 0);
-	char sign = litersInMinute < minimumAllowedFlow ? ' ' : '!';
+	char sign = litersInMinute > minimumAllowedFlow ? ' ' : '!';
 	int len = sprintf(tempString, "%03d%c", litersInMinute, sign); // Print with leading spaces
 	lcd.print(tempString);
 	cursorPos += len;
