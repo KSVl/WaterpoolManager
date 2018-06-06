@@ -20,7 +20,7 @@ void initSensors()
 	pinMode(FLOW_SENSOR_PIN, INPUT);
 	attachInterrupt(digitalPinToInterrupt(FLOW_SENSOR_PIN), flow, RISING); // Setup Interrupt
 
-	timer.attach_ms(TEMP_TIMER_PERIODICITY, tempReadTimer); // 100ms period (1 second)
+	timer.attach_ms(TEMP_TIMER_PERIODICITY, tempReadTimer); // 10ms period 
 }
 
 
@@ -76,7 +76,6 @@ int flowMeasureCycleCount = 0;
 void flow() // Flow sensor interrupt function
 {
 	flow_frequency++;
-	Serial.println("int!");
 }
 
 void calcFlowTimer() // It called every second, calculates litres/minute

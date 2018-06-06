@@ -23,6 +23,9 @@ Main runtime file
 #include <Wire.h>
 #include <pcf8574_esp.h>		// https://github.com/WereCatf/PCF8574_ESP
 
+#define AP_NAME "WpFlowMeter"	// Default access point name (at 1st device initialization)
+#define AP_PASS "17050000"		// Default access point password (at 1st device initialization)
+
 #define FLOW_SENSOR_PIN 12 // The pin number of flow sensor (should able to set extrernal interrupt)
 #define TEMP_SENSOR_PIN 14 // The pin number of temperature sensors
 
@@ -104,7 +107,7 @@ void setup()
 	//if it does not connect it starts an access point with the specified name
 	//here  "WpFlowMeter"m default password is 17050000
 	//and goes into a blocking loop awaiting configuration
-	wifiManager.autoConnect("WpFlowMeter", "17050000");
+	wifiManager.autoConnect(AP_NAME, AP_PASS);
 	//or use this for auto generated name ESP + ChipID
 	//wifiManager.autoConnect();
 
