@@ -17,11 +17,20 @@ const char LOGTABLE_page[] PROGMEM = R"=====(
 			xhttp.open("GET", "logs", true);
 			xhttp.responseType = "arraybuffer";
 			xhttp.onprogress = updateProgress;
-			xhttp.onload = function (oEvent) {
+			xhttp.onload = function (oEvent) 
+		{
+			if (xhttp.status != 200)
+			{
+				document.getElementById("progress").innerHTML = xhttp.status.toString() + " " + xhttp.statusText;
+				return;
+			}
+
   			var arrayBuffer = xhttp.response; 
-  			if (arrayBuffer) {
+  			if (arrayBuffer) 
+			{
     				var byteArray = new Uint8Array(arrayBuffer);
 
+				var fragment = document.createDocumentFragment();
 				var ind = 0;
 				while (ind < byteArray.byteLength)
 				{
@@ -37,17 +46,23 @@ const char LOGTABLE_page[] PROGMEM = R"=====(
                                         ind += 6;
 
 					var date = new Date(timestamp * 1000).toISOString();
-					var tempString = date.slice(-24, -14)+" "+date.slice(-13, -5) + " &nbsp; " + 
-						" Flow: " + flow.toString().padStart(3, "0") + 
+					var tempString = date.slice(-24, -14)+" "+date.slice(-13, -5);
+					el = document.createElement('li');
+					el.innerText = tempString;
+					el.appendChild( document.createTextNode( '\u00A0\u00A0\u00A0' ) );
+
+					var tempString = " Flow: " + flow.toString().padStart(3, "0") + 
 						" T1: " + temp1.toString().padStart(2, "0") + 
 						" T2: " + temp2.toString().padStart(2, "0") + 
 						" T3: " + temp3.toString().padStart(2, "0") + 
 						" T4: " + temp4.toString().padStart(2, "0") + 
-						" State: " + state.toString(2).padStart(8, "0") + "</br>";
-					document.getElementById("data").innerHTML += tempString;
+						" State: " + state.toString(2).padStart(8, "0");
+
+					el.appendChild( document.createTextNode(tempString));
+					fragment.appendChild(el);
+
 				}
-
-
+				document.getElementById("data").appendChild(fragment);
 			}};
 			xhttp.send(null);
 		}

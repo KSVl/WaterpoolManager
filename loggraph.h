@@ -47,6 +47,8 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 			var data2 = [[], [], [], [], [], []];
 			var ind = 0;
 			var pointsNo = 0;
+			var mindate = Number.MAX_SAFE_INTEGER;
+			var maxdate = 0;
 			while (ind < byteArray.byteLength) {
 				var timestamp = byteArray[ind] | byteArray[ind + 1] << 8 |
 					byteArray[ind + 2] << 16 | byteArray[ind + 3] << 24;
@@ -61,6 +63,10 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 
 				var date = new Date(timestamp * 1000);
 				if (date >= startDate && date <= endDate) {
+					if (date < mindate)
+						mindate = date;	
+					if (date > maxdate)
+						maxdate = date;	
 					var dateStr = date.toISOString();
 					var dateString = dateStr.slice(-24, -14) + " " + dateStr.slice(-13, -5);
 					data1[0].push([dateString, flow]);
@@ -81,8 +87,11 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 			if (pointsNo == 0) {
 				data1 = [[null]];
 				data2 = [[null]];
+				document.getElementById("daterange").innerHTML = 'No data found for the selected period.';
 			}
-			else {
+			else 
+			{
+				document.getElementById("daterange").innerHTML = 'Data found for period: ' + mindate.toLocaleString() + ' - ' + maxdate.toLocaleString() + ', total ' + pointsNo + ' points.';
 				console.log('Number of points: ' + pointsNo);
 			}
 
@@ -104,7 +113,14 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 			xhttp.open("GET", url, true);
 			xhttp.responseType = "arraybuffer";
 			xhttp.onprogress = updateProgress;
-			xhttp.onload = function (oEvent) {
+			xhttp.onload = function (oEvent) 
+			{
+				if (xhttp.status != 200)
+				{
+					document.getElementById("progress").innerHTML = xhttp.status.toString() + " " + xhttp.statusText;
+					return;
+				}
+
 				var arrayBuffer = xhttp.response;
 				if (arrayBuffer) {
 					var byteArray = new Uint8Array(arrayBuffer);
@@ -142,16 +158,26 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 							label: 'Flow'
 						},
 						{
-							label: 'Temp1'
+							label: 'Temp1',
+						        color: 'rgba(0, 0, 255, 0.5)',
+        					  	markerOptions: { style: 'circle', size: 2 }
 						},
 						{
-							label: 'Temp2'
+							label: 'Temp2',
+					                color: 'rgba(135, 206, 235, 0.5)',
+        					  	markerOptions: { style: 'circle', size: 2 }
 						},
 						{
-							label: 'Temp3'
+							label: 'Temp3',
+					                color: 'rgba(255, 0, 0, 0.5)',
+						        showLine:false, 
+							markerOptions: { size: 2, style:"x" }
 						},
 						{
-							label: 'Temp4'
+							label: 'Temp4',
+					                color: 'rgba(250, 128, 114, 0.5)',
+						        showLine:false, 
+						        markerOptions: { size: 2, style:"x" }
 						}
 					]
 				});
@@ -245,10 +271,14 @@ const char LOGGRAPH_page[] PROGMEM = R"=====(
 <body onload="createPlot('logs');">
 	<h1>Waterpool monitor - Logging Graphs</h1>
 
-	Date range: <input type="text" name="datetimes" style="width:200px" /> 	<span id="progress">Loading...</span>
-
+	Date range: <input type="text" name="datetimes" style="width:200px" />
+	<br/>
+	<span id="daterange"></span>
+	<br/>
 	<div id="chart1" style="width:700px; height:400px"></div>
 	<div id="chart2" style="width:700px; height:400px"></div>
+	<br/>
+	<span id="progress">Loading...</span>
 </body>
 </html>
 )=====";

@@ -221,22 +221,14 @@ void handleLogs()
 	server->send(200, "application/octet-stream", "");
 
 	char data[sizeof(LogEvent)];
-	uint32_t blockTimestamp;
 	uint32_t timestamp;
-	eeaddr addr = 0;
-	int recNo = 0;
-	while (logger.readNextRecord((unsigned char*)&data, blockTimestamp, addr))
+	Reader_State state;
+	while (logger.readNextRecord((unsigned char*)&data, &state))
 	{
-		if (blockTimestamp != 0)	// This is a start of next block
-		{
-			timestamp = blockTimestamp;
-			recNo = 0;
-		}
+		if (state.timestamp != 0)	// This is a start of next block
+			timestamp = state.timestamp;
 		else
-		{
-			recNo++;
 			timestamp += loggingPeriodSeconds;
-		}
 		server->sendContent_P((char*)&timestamp, sizeof(timestamp));
 		server->sendContent_P(data, sizeof(LogEvent));
 	}

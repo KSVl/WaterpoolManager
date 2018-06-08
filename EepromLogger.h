@@ -11,6 +11,15 @@ struct Block_Header
 };
 #pragma pack(pop)
 
+struct Reader_State
+{
+	uint32_t timestamp;
+	unsigned char blockCrc;
+	eeaddr currentAddress;
+
+	Reader_State() : currentAddress(0) { }
+};
+
 typedef unsigned char* Logger_Record;
 
 class EepromLogger
@@ -26,7 +35,7 @@ public:
 	void initialize(const eeaddr start_address, const eeaddr end_address,
 		const unsigned int records_in_block, const unsigned int record_size, const bool crcForEachRecord);
 	void writeNextRecord(const Logger_Record);
-	bool readNextRecord(Logger_Record, uint32_t &timestamp, eeaddr &addr);
+	bool readNextRecord(Logger_Record, Reader_State* state);
 	void format();
 private:
 	eeaddr start_address;
@@ -40,13 +49,14 @@ private:
 	unsigned int block_count;
 
 	eeaddr current_Address;		// Current address for writing
+	unsigned char lastWroteBlockCrc;	
 
 	Write_Handler *writeByte;
 	Read_Handler *readByte;
 	GetTimestamp_Handler *getTimestamp;
 
 	bool readBlockHeader(Block_Header &block_Header, eeaddr &address);
-	bool readRecord(Logger_Record &record, eeaddr &address);
+	bool readRecord(Logger_Record &record, eeaddr &address, const unsigned char &blockCrc);
 	bool findFirstValidBlock();
 	bool findLastValidBlock();
 	void moveToNextBlock(eeaddr & readAddress);

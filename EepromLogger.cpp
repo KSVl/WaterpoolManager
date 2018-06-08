@@ -61,6 +61,7 @@ void EepromLogger::writeNextRecord(const Logger_Record record)
 		block_Header.crc = calculate_crc8((unsigned char *)&block_Header.timestamp, sizeof(block_Header.timestamp));
 		writeBytes(current_Address, (unsigned char*)&block_Header, sizeof(block_Header));
 		current_Address += sizeof(block_Header);
+		lastWroteBlockCrc = block_Header.crc;
 	}
 
 	// Write the record itself
@@ -69,6 +70,7 @@ void EepromLogger::writeNextRecord(const Logger_Record record)
 	if (crcForEachRecord)
 	{
 		unsigned char crc = calculate_crc8(record, record_size);
+		crc = crc ^ lastWroteBlockCrc;	
 		writeByte(current_Address, crc);
 		current_Address += sizeof(crc);
 	}
@@ -76,31 +78,35 @@ void EepromLogger::writeNextRecord(const Logger_Record record)
 
 // Read the next record from the memory storage. The record time may calculated from the blockTimestamp value and number of record read.
 // Return false if no more valid records can be read
-bool EepromLogger::readNextRecord(Logger_Record record, uint32_t &timestamp, eeaddr &readAddress)
+bool EepromLogger::readNextRecord(Logger_Record record, Reader_State* state)
 {
-	if (readAddress == 0)
-		readAddress = start_address;
-	timestamp = 0;
+	if (state->currentAddress == 0)
+		state->currentAddress = start_address;
+	state->timestamp = 0;
 	bool read = false;
 	Block_Header block_Header;
 	while (!read)
 	{
 		// If address reached the start of the next block, read the header
-		if ((readAddress - start_address) % block_size == 0)
+		if ((state->currentAddress - start_address) % block_size == 0)
 		{
+			yield();
 			// Last block that can't fit completely and is not used, end reading
-			if (readAddress + block_size > end_address + 1)
+			if (state->currentAddress + block_size > end_address + 1)
 				return false;
-			if (!readBlockHeader(block_Header, readAddress))
+			if (!readBlockHeader(block_Header, state->currentAddress))
 			{
-				moveToNextBlock(readAddress);
+				moveToNextBlock(state->currentAddress);
 				continue;
 			}
-			timestamp = block_Header.timestamp;
+			state->timestamp = block_Header.timestamp;
+			state->blockCrc = block_Header.crc;
 		}
-		read = readRecord(record, readAddress);
+		read = readRecord(record, state->currentAddress, state->blockCrc);
 		if (!read)
-			moveToNextBlock(readAddress);
+		{
+			moveToNextBlock(state->currentAddress);
+		}
 	}
 }
 
@@ -118,7 +124,7 @@ bool EepromLogger::readBlockHeader(Block_Header &block_Header, eeaddr &address)
 
 // Read the data record from the address, update the address after reading
 // Return false if the read record is not valid
-bool EepromLogger::readRecord(Logger_Record &record, eeaddr &address)
+bool EepromLogger::readRecord(Logger_Record &record, eeaddr &address, const unsigned char &blockCrc)
 {
 	bool validRecord = true;
 	readBytes(address, record, record_size);
@@ -128,6 +134,7 @@ bool EepromLogger::readRecord(Logger_Record &record, eeaddr &address)
 		unsigned char crc = readByte(address);
 		address += sizeof(crc);
 		unsigned char crc1 = calculate_crc8(record, record_size);
+		crc1 = crc1 ^ blockCrc;
 		validRecord = crc == crc1;
 	}
 	return validRecord;
